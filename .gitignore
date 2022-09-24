@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Code Composer
+Release/*
+Debug/*
+.xdchelp
+config/*
+.launches/*

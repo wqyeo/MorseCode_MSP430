@@ -1,6 +1,8 @@
 #include <msp430.h>
 
-char morse_ref[36][5] = {
+// Signal Codes.
+// We will fetch this by ASCII value with an offset.
+char morse_ref[36][6] = {
                       // 0-9
                       "33333",
                       "13333",
@@ -43,20 +45,18 @@ char morse_ref[36][5] = {
 
 void delay() {
     volatile unsigned int j;
-    for(j=12000; j>0; --j);
+    for(j=10000; j>0; --j);
 }
 
 void toggle_blink(int portNum) {
     if (portNum == 1){
-        P1DIR |= 0x01;
         P1OUT ^= 0x01;
     } else if (portNum == 4){
-        P4DIR |= 0x80;
         P4OUT ^= 0x80;
     }
 }
 
-void blink_morse(char blinkMessage[]) {
+void blink_morse(char* blinkMessage) {
     volatile unsigned int x;
     for (x = 0; blinkMessage[x] != 0; ++x) {
         int blinkDuration = blinkMessage[x] - '0';
@@ -77,8 +77,14 @@ void blink_morse(char blinkMessage[]) {
 void main(void) {
 	WDTCTL = WDTPW | WDTHOLD;
 
-    char message[] = "HELLO WORLD";
+	// Clear signals and set output.
+    P1DIR = 0x01;
+    P4DIR = 0x80;
 
+    P1OUT = 0x00;
+    P4OUT = 0x00;
+
+    char message[] = "HELLO WORLD";
     volatile unsigned int i;
     /* Un-comment this chunk if your message is in lower-case.
      * (Though this just converts it to upper-case, so it is better
@@ -101,7 +107,7 @@ void main(void) {
 	            offset = -('0');
 	        } else {
 	            // assume char is A-Z
-	            offset = -('A') + 11;
+	            offset = -('A') + 10;
 	        }
 
 	        int index = ascii + offset;

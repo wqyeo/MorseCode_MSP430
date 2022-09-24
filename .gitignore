@@ -57,3 +57,5 @@ Debug/*
 .xdchelp
 config/*
 .launches/*
+.settings/
+targetConfigs/
